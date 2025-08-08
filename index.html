@@ -20,6 +20,65 @@
       position: relative;
     }
 
+    .password-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 3px double #ff9e9e;
+      border-radius: 25px;
+      padding: 40px 50px;
+      box-shadow: 0 15px 40px rgba(255, 158, 158, 0.25),
+                  0 5px 15px rgba(255, 158, 158, 0.22);
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      z-index: 100;
+    }
+
+    .password-container h2 {
+      font-family: 'Pacifico', cursive;
+      color: #ff4d79;
+      margin-bottom: 20px;
+    }
+
+    .password-input {
+      padding: 12px 15px;
+      border: 2px solid #ffb6c1;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 80%;
+      margin-bottom: 15px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .password-input:focus {
+      border-color: #ff6b8b;
+      box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+    }
+
+    .submit-btn {
+      background: linear-gradient(to right, #ff6b8b, #ff4d79);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 107, 139, 0.4);
+    }
+
+    .error-message {
+      color: #ff4d79;
+      margin-top: 10px;
+      font-weight: 600;
+      display: none;
+    }
+
     .shayari-container {
       background-color: rgba(255, 255, 255, 0.95);
       border: 3px double #ff9e9e;
@@ -34,6 +93,7 @@
       transform-style: preserve-3d;
       transition: all 0.3s ease;
       z-index: 10;
+      display: none;
     }
 
     .shayari-container:hover {
@@ -221,7 +281,15 @@
   </style>
 </head>
 <body>
-  <div class="shayari-container">
+  <div class="password-container" id="passwordContainer">
+    <h2>Enter Password</h2>
+    <p>To view this special Rakhi message, please enter the password:</p>
+    <input type="password" class="password-input" id="passwordInput" placeholder="Enter password">
+    <button class="submit-btn" onclick="checkPassword()">Submit</button>
+    <p class="error-message" id="errorMessage">Incorrect password! Try again.</p>
+  </div>
+
+  <div class="shayari-container" id="shayariContainer">
     <div class="floating-hearts" id="hearts-container"></div>
     <div class="rakhi-decoration" style="top:-30px;left:-30px;transform:rotate(-15deg)"></div>
     <div class="rakhi-decoration" style="bottom:-30px;right:-30px;transform:rotate(15deg)"></div>
@@ -253,21 +321,47 @@
   <div class="confetti" id="confetti-container"></div>
 
   <script>
+    function checkPassword() {
+      const passwordInput = document.getElementById('passwordInput');
+      const errorMessage = document.getElementById('errorMessage');
+      const passwordContainer = document.getElementById('passwordContainer');
+      const shayariContainer = document.getElementById('shayariContainer');
+      
+      if (passwordInput.value.toLowerCase() === 'anjli') {
+        passwordContainer.style.display = 'none';
+        shayariContainer.style.display = 'block';
+        createHearts();
+      } else {
+        errorMessage.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    // Allow pressing Enter key to submit password
+    document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+
     // Create floating hearts
-    const container = document.getElementById('hearts-container');
-    const colors = ['#ffb6c1', '#ff9e9e', '#ff6b8b', '#ff4d79', '#ff85a2'];
-    
-    for (let i = 0; i < 20; i++) {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerHTML = ['❤️', '💖', '💗', '💓', '💞'][Math.floor(Math.random() * 5)];
-      heart.style.left = Math.random() * 100 + '%';
-      heart.style.top = Math.random() * 100 + '%';
-      heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
-      heart.style.animationDelay = Math.random() * 5 + 's';
-      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
-      heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-      container.appendChild(heart);
+    function createHearts() {
+      const container = document.getElementById('hearts-container');
+      const colors = ['#ffb6c1', '#ff9e9e', '#ff6b8b', '#ff4d79', '#ff85a2'];
+      
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = ['❤️', '💖', '💗', '💓', '💞'][Math.floor(Math.random() * 5)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.top = Math.random() * 100 + '%';
+        heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
+        heart.style.animationDelay = Math.random() * 5 + 's';
+        heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        container.appendChild(heart);
+      }
     }
 
     // Create confetti on click/tap
